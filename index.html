@@ -46,7 +46,12 @@
             <legend class="sr-only">Editar carro selecionado</legend>
             <div class="panel-heading"><div><span class="eyebrow" id="selected-slot-label">SLOT 01</span><h3 id="selected-car-name">Escolha seu próximo projeto</h3></div><button id="remove-car" class="text-button subtle">Remover carro</button></div>
             <label class="field full"><span>Carro neste slot</span><select id="car-select"><option value="">Selecione um carro</option></select></label>
-            <div class="tuning-strip"><div><strong>Desempenho</strong><span id="performance-label">Importe um perfil para começar</span></div><div class="segmented"><button id="stock-performance" class="button compact">Original</button><button id="full-performance" class="button compact accent-outline">Full tuning ↗</button></div></div>
+            <section class="tuning-strip performance-panel" aria-label="Tuning de performance">
+              <div><strong>Full tuning de performance</strong><span id="performance-label" role="status">Importe um perfil para começar</span></div>
+              <p>Instala os upgrades máximos de motor, ECU, transmissão, suspensão, pneus, freios, turbo e nitro, incluindo upgrades únicos, no carro selecionado.</p>
+              <div class="segmented"><button id="full-performance" class="button primary">Aplicar performance máxima ↗</button><button id="stock-performance" class="button compact">Restaurar desempenho original</button></div>
+              <small>Importe o save e selecione uma vaga com carro para habilitar. Depois, baixe o save editado.</small>
+            </section>
             <div class="editor-fields">
               <label class="field"><span>Pintura</span><select id="paint-select"></select></label>
               <label class="field"><span>Rodas</span><select id="wheel-select"></select></label>
