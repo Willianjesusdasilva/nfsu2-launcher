@@ -158,6 +158,21 @@ test('magazine captures sharing 20CM magic are preserved, not mistaken for caree
   assert.throws(() => openArchive(magazine, 'magazine', zip), /incompatível/);
   assert.throws(() => openArchive(zip.zipSync({ magazine }), 'photos.zip', zip), /Nenhum perfil/);
 });
+
+test('mixed backups isolate unsupported entries and keep arbitrary profile names and paths', () => {
+  const unknown = fixture('Unknown'); unknown[28] = 99;
+  const entries = { 'custom-folder/renamed.dat': fixture('Player Two'), 'unknown/profile': unknown, 'unrelated.bin': new Uint8Array([9, 8, 7]) };
+  const archive = openArchive(zip.zipSync(entries), 'any-name.zip', zip);
+  assert.equal(archive.profiles.length, 1);
+  assert.equal(archive.profiles[0].name, 'Player Two');
+  assert.equal(archive.unsupported.length, 1);
+  setMoney(archive.profiles[0].bytes, 1000000);
+  const out = zip.unzipSync(exportArchive(archive, zip).bytes);
+  assert.deepEqual(out['unknown/profile'], unknown);
+  assert.deepEqual(out['unrelated.bin'], entries['unrelated.bin']);
+  assert.equal(money(out['custom-folder/renamed.dat']), 1000000);
+  assert.throws(() => openArchive(zip.zipSync({ unknown }), 'unsupported.zip', zip), /versão ainda não suportada/);
+});
 test('hostile paths, ZIP bombs, duplicate paths and truncated ZIPs are refused', () => {
   for (const path of ['../x', '/x', 'C:/x', '__proto__/x', 'x\\y']) {
     const raw = zip.zipSync({ [path]: new Uint8Array([1]) });

@@ -1,7 +1,7 @@
 import { CARS } from './data/cars.js';
 import { PAINTS, WHEELS, RIM_COLORS } from './data/style.js';
-import * as save from './save.js?v=3';
-import { openArchive, exportArchive } from './archive.js?v=3';
+import * as save from './save.js?v=4';
+import { openArchive, exportArchive } from './archive.js?v=4';
 
 const $ = id => document.getElementById(id);
 let archive = null, activeProfile = 0, activeSlot = 0, reading = false, moneyInvalid = false, toastTimer;
@@ -130,7 +130,8 @@ async function importFile(file) {
     $('file-description').textContent = `${file.name} · ${loaded.profiles.length} ${loaded.profiles.length === 1 ? 'perfil encontrado' : 'perfis encontrados'}`;
     $('import-title').textContent = 'Save na oficina';
     const oldChecksums = loaded.profiles.some(p => !save.validChecksums(p.bytes));
-    notify(oldChecksums ? 'Perfil carregado. As verificações antigas serão recalculadas ao baixar a cópia editada.' : 'Perfil carregado. Seu original está preservado; pode começar a editar.');
+    const message = oldChecksums ? 'Perfil carregado. As verificações antigas serão recalculadas ao baixar a cópia editada.' : 'Perfil carregado. Seu original está preservado; pode começar a editar.';
+    notify(message + (loaded.unsupported.length ? ` ${loaded.unsupported.length} arquivo(s) de versão desconhecida ou danificados serão preservados sem edição.` : ''));
   } catch (e) { notify(e.message, true); }
   finally { reading = false; $('import-button').disabled = false; $('import-button').textContent = archive ? 'Trocar arquivo ↗' : 'Importar save ↗'; $('file-input').value = ''; render(); }
 }

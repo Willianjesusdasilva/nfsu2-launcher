@@ -1,4 +1,4 @@
-import { SIZE, isProfile, validate, profileName, seal } from './save.js?v=3';
+import { SIZE, isProfile, validate, profileName, seal } from './save.js?v=4';
 
 const LIMIT = 16 * 1024 * 1024;
 function inspectZip(b) {
@@ -35,16 +35,21 @@ export function openArchive(input, filename, zipAPI = globalThis.fflate) {
     try { entries = zipAPI.unzipSync(raw); } catch { throw new Error('Não foi possível descompactar o ZIP. Baixe um novo backup e tente novamente.'); }
     zip = true;
   } else entries = { [filename]: raw };
-  const profiles = [];
+  const profiles = [], unsupported = [];
   for (const [path, bytes] of Object.entries(entries)) if (isProfile(bytes)) {
     // Photos/magazine captures also use the 20CM container magic. Keep them
     // unchanged in backups; that magic alone does not identify a career profile.
     if (zip && bytes.length !== SIZE) continue;
-    validate(bytes);
+    try { validate(bytes); }
+    catch (error) {
+      if (!zip) throw error;
+      unsupported.push({ path, reason: error.message });
+      continue;
+    }
     profiles.push({ path, name: profileName(bytes), original: bytes.slice(), bytes: bytes.slice(), actions: [] });
   }
-  if (!profiles.length) throw new Error('Nenhum perfil compatível foi encontrado. Use o ZIP de “Download backup” do jogo ou o arquivo de perfil sem extensão.');
-  return { filename, raw, entries, profiles, zip };
+  if (!profiles.length) throw new Error(unsupported.length ? 'O backup contém perfis de uma versão ainda não suportada ou com cabeçalho danificado. Nenhum arquivo foi alterado.' : 'Nenhum perfil compatível foi encontrado. Use o ZIP de “Download backup” do jogo ou o arquivo de perfil sem extensão.');
+  return { filename, raw, entries, profiles, zip, unsupported };
 }
 export function exportArchive(archive, zipAPI = globalThis.fflate) {
   const entries = { ...archive.entries };
