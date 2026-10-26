@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111410">
+  <meta name="description" content="Edite seu save de NFS Underground 2 no navegador. Dinheiro, 31 carros, cinco slots, tuning e desbloqueios. Seus arquivos ficam com você.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <title>NFSU2 Launcher — Sua garagem, do seu jeito</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="vendor/fflate.js"></script>
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Ir para o editor</a>
+<aside class="rail">
+  <a class="brand" href="#inicio" aria-label="NFSU2 Launcher, início"><span class="brand-mark">02<span>/</span></span><span>NFSU2<small>LAUNCHER</small></span></a>
+  <span class="rail-label">SAVE WORKSHOP</span>
+  <nav aria-label="Navegação principal">
+    <a href="#inicio" class="nav-link active"><span>01</span> Meu perfil</a>
+    <a href="#garagem" class="nav-link"><span>02</span> Garagem <b>5</b></a>
+    <a href="#carteira" class="nav-link"><span>03</span> Dinheiro</a>
+    <a href="#desbloqueios" class="nav-link"><span>04</span> Desbloqueios</a>
+  </nav>
+  <div class="rail-bottom"><span class="local-dot"></span> Seus arquivos ficam aqui.<p>Processamento local.<br>Sem login. Sem upload.</p><a href="https://github.com/Willianjesusdasilva/nfsu2-launcher" target="_blank" rel="noopener noreferrer">Código no GitHub ↗</a><small>FAN PROJECT · V1.0</small></div>
+</aside>
+<div class="workspace">
+  <header class="topbar"><span>UNDERGROUND 2 <span class="slash">/</span> SAVE EDITOR</span><a href="https://nfsu2.xyz/" target="_blank" rel="noopener noreferrer" class="game-link">Abrir jogo <span>↗</span></a></header>
+  <main id="main">
+    <section id="inicio" class="intro">
+      <div><div class="eyebrow"><span class="local-dot"></span> OFICINA ABERTA</div><h1>Sua garagem.<br><em>Do seu jeito.</em></h1><p>Traga seu save. Prepare os carros. Volte para as ruas.</p></div>
+      <div class="intro-stamp"><span>31</span><p>CARROS<br>5 VAGAS · SEM LIMITES DE IDEIA</p><div class="speed-lines"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    </section>
+    <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+    <section class="import-zone" id="drop-zone" aria-labelledby="import-title">
+      <div class="import-icon" aria-hidden="true">↥</div><div class="import-copy"><h2 id="import-title">Comece pelo seu save</h2><p id="file-description">Arraste o backup .zip ou o arquivo do perfil sem extensão.</p><small>Compatível com o save de 54.966 bytes do PC e do NFSU2 web.</small></div><button id="import-button" class="button primary">Importar save <span>↗</span></button><input id="file-input" type="file" accept=".zip,.usr,application/zip,application/octet-stream" hidden>
+    </section>
+    <div class="profile-bar" id="profile-bar" hidden><label for="profile-select">PERFIL ATIVO <select id="profile-select"></select></label><span class="profile-state"><i></i> Original preservado</span><button id="download-original" class="text-button">Baixar original ↓</button></div>
+    <div class="editor-layout">
+      <div class="editor-content">
+        <section id="garagem" class="garage" aria-labelledby="garage-title">
+          <div class="section-heading"><div><span class="eyebrow">01 / SUA COLEÇÃO</span><h2 id="garage-title">A garagem</h2></div><span class="count" id="garage-count">0 <small>/ 5 VAGAS</small></span></div>
+          <div id="slot-grid" class="slot-grid" aria-label="Vagas da garagem"></div>
+          <fieldset class="panel car-editor" id="car-editor" disabled>
+            <legend class="sr-only">Editar carro selecionado</legend>
+            <div class="panel-heading"><div><span class="eyebrow" id="selected-slot-label">SLOT 01</span><h3 id="selected-car-name">Escolha seu próximo projeto</h3></div><button id="remove-car" class="text-button subtle">Remover carro</button></div>
+            <label class="field full"><span>Carro neste slot</span><select id="car-select"><option value="">Selecione um carro</option></select></label>
+            <div class="tuning-strip"><div><strong>Desempenho</strong><span id="performance-label">Importe um perfil para começar</span></div><div class="segmented"><button id="stock-performance" class="button compact">Original</button><button id="full-performance" class="button compact accent-outline">Full tuning ↗</button></div></div>
+            <div class="editor-fields">
+              <label class="field"><span>Pintura</span><select id="paint-select"></select></label>
+              <label class="field"><span>Rodas</span><select id="wheel-select"></select></label>
+              <label class="field"><span>Cor das rodas</span><select id="rim-select"></select></label>
+              <label class="field"><span>Altura da suspensão</span><select id="height-select"><option value="keep">Manter ajuste atual</option><option value="100">Original · ajuste neutro</option><option value="95">OEM+ · rebaixamento leve</option><option value="80">Esportivo · mais baixo</option><option value="0">Mínima · rebaixamento máximo</option></select></label>
+              <label class="field"><span>Vidros</span><select id="tint-select"><option value="keep">Manter vidros atuais</option><option value="stock">Originais</option><option value="light">Preto leve</option><option value="medium">Preto médio</option><option value="dark">Preto escuro</option></select></label>
+              <div class="field preset-field"><span>Estética sem exagero</span><button id="oem-preset" class="button">Aplicar OEM+ <span>↗</span></button></div>
+            </div>
+            <p class="field-note">OEM+ restaura carroceria, capô, faróis, rodas e aerofólio de fábrica, mantém a pintura e aplica altura leve. O desempenho é preservado.</p>
+          </fieldset>
+        </section>
+        <section id="carteira" class="panel wallet" aria-labelledby="wallet-title">
+          <div class="section-heading"><div><span class="eyebrow">02 / BANCO DE BAYVIEW</span><h2 id="wallet-title">Dinheiro para o projeto.</h2></div><span class="wallet-symbol" aria-hidden="true">$</span></div>
+          <fieldset id="wallet-fields" disabled><label class="money-input" for="money-input"><span>$</span><input id="money-input" type="number" min="0" max="999999999" step="1" inputmode="numeric" placeholder="0" aria-describedby="money-help"></label><div class="money-presets"><button class="chip" data-money="1000000">1 milhão</button><button class="chip" data-money="10000000">10 milhões</button><button class="chip" data-money="999000000">999 milhões ↗</button></div></fieldset><p class="field-note" id="money-help">Os atalhos definem o saldo total. Máximo: $999.999.999.</p>
+        </section>
+        <section id="desbloqueios" class="panel unlocks" aria-labelledby="unlocks-title">
+          <div class="section-heading"><div><span class="eyebrow">03 / ABRA AS PORTAS</span><h2 id="unlocks-title">Menos cadeados. Mais opções.</h2></div></div>
+          <fieldset id="unlock-fields" disabled>
+            <button id="unlock-all" class="button accent-outline full-width">Liberar todos os itens abaixo <span>↗</span></button>
+            <div class="unlock-grid">
+              <button class="unlock-card" data-unlock="parts"><span class="unlock-glyph">◈</span><strong>Customizações</strong><small>Catálogo das lojas, peças especiais e upgrades.</small><span class="unlock-state">Liberar ↗</span></button>
+              <button class="unlock-card" data-unlock="dealers"><span class="unlock-glyph">▱</span><strong>Concessionária</strong><small>Os 25 veículos da lista de desbloqueios da carreira.</small><span class="unlock-state">Liberar ↗</span></button>
+              <button class="unlock-card" data-unlock="shops"><span class="unlock-glyph">⌖</span><strong>Lojas no mapa</strong><small>Marcar as localizações das lojas como descobertas.</small><span class="unlock-state">Revelar ↗</span></button>
+              <button class="unlock-card" data-unlock="slots"><span class="unlock-glyph">▥</span><strong>Cinco vagas</strong><small>Abrir os cinco espaços da garagem da carreira.</small><span class="unlock-state">Liberar ↗</span></button>
+            </div>
+          </fieldset><p class="field-note">Esses atalhos não concluem as corridas nem a história. Peças especiais podem variar conforme a versão do jogo.</p>
+        </section>
+        <details class="help panel"><summary>Como levar as alterações para o jogo <span>+</span></summary><ol><li>Encerre o jogo antes de restaurar um backup.</li><li>Importe seu ZIP ou perfil aqui e faça as alterações.</li><li>Baixe a cópia editada. No NFSU2 web, vá em <strong>Saves → Restore</strong> e escolha o ZIP.</li><li>Carregue seu perfil e confira os carros. Seu arquivo original continua disponível.</li></ol><p>O link “Abrir jogo” abre o site em outra aba. O editor não injeta o save no jogo automaticamente. Perfis de console e saves de outras versões não são suportados.</p></details>
+      </div>
+      <aside class="export-panel panel" aria-labelledby="export-title">
+        <span class="eyebrow">PRONTO PARA A PRÓXIMA VOLTA</span><h2 id="export-title">Seu novo<br>ponto de partida.</h2><div class="export-stats"><div><span>Perfil</span><strong id="summary-profile">—</strong></div><div><span>Carros na garagem</span><strong id="summary-cars">— / 5</strong></div><div><span>Saldo final</span><strong id="summary-money">$0</strong></div></div>
+        <div class="changes-heading">ALTERAÇÕES <span id="change-count">0</span></div><ul id="changes-list" class="changes-list"><li class="empty-changes">Importe um save para começar.</li></ul>
+        <button id="export-button" class="button primary full-width" disabled>Baixar save editado <span>↓</span></button><button id="reset-button" class="text-button reset-button" disabled>Desfazer alterações do perfil</button><div class="export-foot"><span class="local-dot"></span> Cópia nova. Original intacto.</div><small>Os checksums são recalculados na exportação. Confira o resultado dentro do jogo.</small>
+      </aside>
+    </div>
+    <footer><span class="footer-brand">NFSU2 <b>/</b> LAUNCHER</span><p>Projeto de fã, sem vínculo com a Electronic Arts.<br>Sem arquivos do jogo. Sem armazenamento dos seus saves.</p><a href="https://github.com/Willianjesusdasilva/nfsu2-launcher" target="_blank" rel="noopener noreferrer">GitHub ↗</a></footer>
+  </main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body></html>
