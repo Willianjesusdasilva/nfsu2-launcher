@@ -1,4 +1,4 @@
-import { isProfile, validate, profileName, seal } from './save.js';
+import { isProfile, validate, profileName, seal } from './save.js?v=2';
 
 const LIMIT = 16 * 1024 * 1024;
 function inspectZip(b) {
