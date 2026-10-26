@@ -33,7 +33,7 @@ Trocar o modelo restaura as peças visuais e o acerto daquele slot para os origi
 
 Suporta o formato de perfil de PC **54.966 bytes**, versão `0x10D`, usado pelo port web. Rejeita outros formatos, ZIPs com senha e backups acima dos limites documentados no código. Não converte saves de console nem adiciona modelos, peças ou texturas ao jogo. Um modelo de mod já presente é preservado enquanto não for substituído.
 
-As cores são as opções existentes na paleta do jogo; “Dolphin” é uma aproximação de cinza metálico. Altura e aparência dependem do modelo, dos upgrades e da versão. Os desenhos nas vagas são ilustrações esquemáticas, não previews do jogo. Os atalhos de peças especiais usam padrões públicos de editores da comunidade; o resultado final deve ser conferido dentro do jogo. Nenhuma função conclui automaticamente a história ou as corridas.
+As cores são as opções existentes na paleta do jogo; “Dolphin” é uma aproximação de cinza metálico. Altura e aparência dependem do modelo, dos upgrades e da versão. Os desenhos nas vagas são ilustrações esquemáticas, não previews do jogo. O desbloqueio marca os bitmaps de propriedade de peças nos cinco inventários, preservando contadores e listas de performance. A estrutura foi conferida nas rotinas nativas de gravação e leitura; o resultado final deve ser conferido dentro do jogo. Nenhuma função conclui automaticamente a história ou as corridas.
 
 ## Rodar localmente
 

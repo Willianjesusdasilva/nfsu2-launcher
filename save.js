@@ -121,14 +121,23 @@ function bytes(hex) { return new Uint8Array(hex.trim().split(/\s+/).map(v => par
 export function unlockPerformance(b) {
   for (const start of [0xc45b, 0xc483]) for (let off = start; off <= start + 0x20; off += 8) b[off] = Math.max(b[off], 3);
 }
+export function unlockOwnedParts(b, i) {
+  indexCheck(i);
+  // CareerCar::Save (0x516620) serializes OwnedPartInventory at record + 0x432.
+  // OwnedPartInventory::Save (0x503F00) reorders the final fields. Only these
+  // ranges are bitmaps; +0x294 is a counter and +0x2A0 is a performance hash list.
+  const at = BASE + i * STRIDE + 0x432;
+  // Repair only the exact invalid tail written by launcher versions before this fix.
+  const legacy = bytes(UNLOCKS.layout.SHOP_PARTS_UNLOCK_TAIL_HEX);
+  if (legacy.every((v, k) => b[at + 0x291 + k] === v)) {
+    b.fill(0, at + 0x294, at + 0x298);
+    b.fill(0, at + 0x2a0, at + 0x3b0);
+  }
+  for (const [start, end] of [[0, 0x294], [0x298, 0x2a0], [0x3b0, 0x3c0]]) b.fill(0xff, at + start, at + end);
+}
 export function unlock(b, kind) {
   if (kind === 'parts') {
-    // Public editor's catalog + unique-parts patterns, without overwriting career/world progression.
-    for (const p of Object.values(UNLOCKS.special)) b.set(bytes(p.hex), p.off);
-    for (let i = 0; i < 5; i++) {
-      b.set(bytes(UNLOCKS.layout.SHOP_PARTS_UNLOCK_TAIL_HEX), 0x5870 + i * STRIDE + 0x6bb);
-      b[0x5870 + i * STRIDE + 0x42a] = 0x23;
-    }
+    for (let i = 0; i < 5; i++) unlockOwnedParts(b, i);
     unlockPerformance(b);
   } else if (kind === 'dealers') for (const p of DEALERS) b.set(bytes(p.hex), p.off);
   else if (kind === 'shops') b.fill(1, 0xad9a, 0xad9a + 0x3a);

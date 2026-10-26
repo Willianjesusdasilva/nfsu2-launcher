@@ -186,7 +186,7 @@ for (const el of document.querySelectorAll('[data-money]')) el.addEventListener(
   moneyInvalid = false; $('money-input').setCustomValidity('');
   modify('money', 'Saldo definido em ' + cash(el.dataset.money), b => save.setMoney(b, el.dataset.money));
 });
-const unlockLabels = { parts: 'Catálogo e peças especiais liberados', dealers: 'Carros da concessionária liberados', shops: 'Lojas reveladas no mapa', slots: 'Cinco vagas da garagem liberadas' };
+const unlockLabels = { parts: 'Inventário completo de peças liberado nos cinco slots', dealers: 'Carros da concessionária liberados', shops: 'Lojas reveladas no mapa', slots: 'Cinco vagas da garagem liberadas' };
 for (const el of document.querySelectorAll('[data-unlock]')) el.addEventListener('click', () => modify('unlock-' + el.dataset.unlock, unlockLabels[el.dataset.unlock], b => save.unlock(b, el.dataset.unlock)));
 $('unlock-all').addEventListener('click', () => {
   if (!current()) return;

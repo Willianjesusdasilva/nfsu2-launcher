@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import { CARS } from '../data/cars.js';
+import { UNLOCKS } from '../data/unlocks.js';
 import { SIZE, BASE, STRIDE, MONEY, validate, profileName, checksum, seal, validChecksums, setMoney, money, slots, slot, replaceCar, clearSlot, setPerformance, setHeight, restoreOEM, unlock } from '../save.js';
 import { openArchive, exportArchive } from '../archive.js';
 const context = vm.createContext({ Uint8Array, Uint16Array, Uint32Array, TextDecoder, TextEncoder });
@@ -85,6 +86,42 @@ test('unlock shortcuts leave player model hashes, balance, name and career race 
   assert.equal(slot(b, 0).hash, slot(original, 0).hash);
   assert.deepEqual(b.subarray(0xa176, 0xad80), original.subarray(0xa176, 0xad80));
   assert.ok(validChecksums(seal(b)));
+});
+
+test('all five inventories unlock every bitmap without changing counters, hash lists or installed parts', () => {
+  const b = fixture();
+  // Nonzero sentinels expose writes outside the ownership bitmaps.
+  for (let i = 0; i < 5; i++) {
+    const start = BASE + i * STRIDE + 0x432;
+    b.fill(0x5a, start, start + 0x3c0);
+  }
+  const original = b.slice();
+  unlock(b, 'parts');
+  for (let i = 0; i < 5; i++) {
+    const record = BASE + i * STRIDE, at = record + 0x432;
+    assert.deepEqual(b.subarray(record, at), original.subarray(record, at));
+    for (const [lo, hi] of [[0, 0x294], [0x298, 0x2a0], [0x3b0, 0x3c0]])
+      assert.ok(b.subarray(at + lo, at + hi).every(v => v === 255));
+    for (const [lo, hi] of [[0x294, 0x298], [0x2a0, 0x3b0]])
+      assert.deepEqual(b.subarray(at + lo, at + hi), original.subarray(at + lo, at + hi));
+    // Native OwnsCarPart uses separate general, decal, wheel and specialty tables.
+    for (const word of [18 * 4, 17 * 4, 22 * 4, 0x16c + 0xfc, 0x26c, 0x27c, 0x28c, 0x298, 0x3b0])
+      assert.equal(new DataView(b.buffer).getUint32(at + word, true), 0xffffffff);
+  }
+  const twice = b.slice(); unlock(b, 'parts'); assert.deepEqual(b, twice);
+  assert.ok(validChecksums(seal(b)));
+});
+
+test('exact obsolete unlock tail is repaired without erasing installed tuning', () => {
+  const b = fixture(), at = BASE + 0x432;
+  setPerformance(b, 0, 'full');
+  const installed = b.slice(BASE, at);
+  b.set(UNLOCKS.layout.SHOP_PARTS_UNLOCK_TAIL_HEX.split(' ').map(v => parseInt(v, 16)), at + 0x291);
+  unlock(b, 'parts');
+  assert.deepEqual(b.subarray(BASE, at), installed);
+  assert.ok(b.subarray(at + 0x294, at + 0x298).every(v => v === 0));
+  assert.ok(b.subarray(at + 0x2a0, at + 0x3b0).every(v => v === 0));
+  assert.ok(slot(b, 0).full);
 });
 test('ZIP round-trip preserves other profiles and every non-profile payload', () => {
   const entries = { 'NFS Underground 2/Pilot/Pilot': fixture(), 'NFS Underground 2/Other/Other': fixture('Other'), 'settings.ini': new TextEncoder().encode('roam = off\n'), 'registry.txt': new Uint8Array([0, 1, 255, 5]) };
