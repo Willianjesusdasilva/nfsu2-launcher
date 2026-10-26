@@ -1,7 +1,7 @@
 import { CARS } from './data/cars.js';
 import { PAINTS, WHEELS, RIM_COLORS } from './data/style.js';
-import * as save from './save.js?v=2';
-import { openArchive, exportArchive } from './archive.js?v=2';
+import * as save from './save.js?v=3';
+import { openArchive, exportArchive } from './archive.js?v=3';
 
 const $ = id => document.getElementById(id);
 let archive = null, activeProfile = 0, activeSlot = 0, reading = false, moneyInvalid = false, toastTimer;

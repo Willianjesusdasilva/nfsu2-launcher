@@ -142,6 +142,22 @@ test('raw profile import/export seals edited bytes and preserves the original', 
   assert.equal(out.filename, 'Pilot'); assert.equal(money(out.bytes), 1000000);
   assert.equal(money(a.raw), 350); assert.ok(validChecksums(out.bytes));
 });
+
+test('magazine captures sharing 20CM magic are preserved, not mistaken for career profiles', () => {
+  const magazine = new Uint8Array(1048612);
+  magazine.set([50, 48, 67, 77]); magazine.fill(117, 36);
+  const entries = { 'NFS Underground 2/Pilot Magazine 1/Pilot Magazine 1': magazine, 'NFS Underground 2/Pilot/Pilot': fixture(), 'gamefile.bin': new Uint8Array([12, 34, 56]) };
+  const archive = openArchive(zip.zipSync(entries), 'backup.zip', zip);
+  assert.equal(archive.profiles.length, 1);
+  assert.equal(archive.profiles[0].name, 'Pilot');
+  setMoney(archive.profiles[0].bytes, 1000000);
+  const exported = zip.unzipSync(exportArchive(archive, zip).bytes);
+  assert.deepEqual(exported['NFS Underground 2/Pilot Magazine 1/Pilot Magazine 1'], magazine);
+  assert.deepEqual(exported['gamefile.bin'], entries['gamefile.bin']);
+  assert.equal(money(exported['NFS Underground 2/Pilot/Pilot']), 1000000);
+  assert.throws(() => openArchive(magazine, 'magazine', zip), /incompatível/);
+  assert.throws(() => openArchive(zip.zipSync({ magazine }), 'photos.zip', zip), /Nenhum perfil/);
+});
 test('hostile paths, ZIP bombs, duplicate paths and truncated ZIPs are refused', () => {
   for (const path of ['../x', '/x', 'C:/x', '__proto__/x', 'x\\y']) {
     const raw = zip.zipSync({ [path]: new Uint8Array([1]) });

@@ -1,4 +1,4 @@
-import { isProfile, validate, profileName, seal } from './save.js?v=2';
+import { SIZE, isProfile, validate, profileName, seal } from './save.js?v=3';
 
 const LIMIT = 16 * 1024 * 1024;
 function inspectZip(b) {
@@ -37,6 +37,9 @@ export function openArchive(input, filename, zipAPI = globalThis.fflate) {
   } else entries = { [filename]: raw };
   const profiles = [];
   for (const [path, bytes] of Object.entries(entries)) if (isProfile(bytes)) {
+    // Photos/magazine captures also use the 20CM container magic. Keep them
+    // unchanged in backups; that magic alone does not identify a career profile.
+    if (zip && bytes.length !== SIZE) continue;
     validate(bytes);
     profiles.push({ path, name: profileName(bytes), original: bytes.slice(), bytes: bytes.slice(), actions: [] });
   }
