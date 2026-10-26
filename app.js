@@ -26,12 +26,15 @@ function record(key, text) {
 }
 function modify(key, description, fn) {
   if (!current()) return;
-  const p = current(), backup = p.bytes.slice();
+  const p = current(), backup = p.bytes.slice(), actions = p.actions.map(a => ({ ...a }));
   try {
     fn(p.bytes);
+    const slotSuffix = '-' + activeSlot;
+    if (key === 'car' + slotSuffix) p.actions = p.actions.filter(a => !a.key.endsWith(slotSuffix));
+    if (key === 'oem' + slotSuffix) p.actions = p.actions.filter(a => !['wheel-select', 'rim-select', 'tint', 'height'].some(k => a.key === k + slotSuffix));
     record(key, description);
     render(); toast(description);
-  } catch (e) { p.bytes = backup; render(); notify(e.message, true); }
+  } catch (e) { p.bytes = backup; p.actions = actions; render(); notify(e.message, true); }
 }
 function vehicleArt(body, color) {
   // Diagrammatic silhouettes only; these are not renders of in-game parts.
